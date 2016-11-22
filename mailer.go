@@ -105,6 +105,7 @@ func mailrelayhandler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			currentAttempt += 1
 		}
+        log.Println("Error:", err)
 	}
 }
 
@@ -112,22 +113,28 @@ func sendEmail(toEmails []string, fromEmail, subject, body string) error {
 	// Connect to the remote SMTP server.
 	c, err := smtp.Dial("mailrelay.comcast.com:25")
 	if err != nil {
+        log.Println("Error dialing...")
 		return err
 	}
 	defer c.Close()
+    log.Println("Dialed and sending...")
 	// Set the sender and recipient.
 	c.Mail("irisadmin@iris.comcast.com")
 	c.Rcpt("robert_sliwa@comcast.com")
 	// Send the email body.
 	wc, err := c.Data()
 	if err != nil {
+        log.Println("Error executing DATA command...")
 		return err
 	}
 	defer wc.Close()
+    log.Println("Writing DATA...")
 	buf := bytes.NewBufferString("To: robert_sliwa@comcast.com\nSubject: Test with subject\nMIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n<html><body><h1>Test message in html</h1></body></html>")
 	if _, err = buf.WriteTo(wc); err != nil {
+        log.Println("Writing DATA...")
 		return err
 	}
 
+    log.Println("DONE...")
 	return nil
 }
