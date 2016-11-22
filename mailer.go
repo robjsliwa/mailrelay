@@ -56,7 +56,7 @@ func mailrelayhandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer wc.Close()
-	buf := bytes.NewBufferString("This is the email body.")
+	buf := bytes.NewBufferString("To: robert_sliwa@comcast.com\nSubject: Test with subject\nMIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n<html><body><h1>Test message in html</h1></body></html>")
 	if _, err = buf.WriteTo(wc); err != nil {
 		log.Println(err)
 		respondErr(w, r, http.StatusBadRequest, err)
